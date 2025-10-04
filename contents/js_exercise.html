@@ -2,53 +2,368 @@
 <html>
 
 <head>
-    <meta>
+    <meta charset="UTF-8">
     <title>JS - Exercise</title>
     <style>
-        table {
-            border-collapse: collapse;
-            width: 400px;
-            /* Fixed table width */
-            table-layout: fixed;
-            /* Important: forces fixed column width */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        th,
-        td {
-            border: 1px solid black;
-            padding: 8px;
-            text-align: left;
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Splash Screen */
+        #splashScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            animation: fadeOut 0.5s ease-out 2s forwards;
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                visibility: hidden;
+            }
+        }
+
+        .splash-content {
+            text-align: center;
+            color: white;
+        }
+
+        .splash-logo {
+            font-size: 72px;
+            margin-bottom: 20px;
+            animation: bounce 1s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .splash-title {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            animation: slideIn 0.8s ease-out;
+        }
+
+        .splash-subtitle {
+            font-size: 18px;
+            opacity: 0.9;
+            animation: slideIn 0.8s ease-out 0.2s backwards;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-top: 30px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Main Content */
+        #mainContent {
+            opacity: 0;
+            animation: fadeIn 0.8s ease-out 2.5s forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            animation: slideUp 0.8s ease-out 2.5s backwards;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            margin-bottom: 20px;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+
+        h2 {
+            color: #667eea;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        h3 {
+            color: #555;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .input-section {
+            margin: 30px 0;
+            padding: 25px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        input[type="text"] {
+            padding: 12px 20px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 15px;
+            width: 200px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-1px);
+        }
+
+        button {
+            padding: 12px 30px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        button:not(.back-btn) {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:not(.back-btn):hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+            border-radius: 10px;
             overflow: hidden;
-            /* Hide overflow text */
-            text-overflow: ellipsis;
-            /* Add "..." when text too long */
-            white-space: nowrap;
-            /* Prevent line break */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 14px;
+        }
+
+        td {
+            border: 1px solid #e0e0e0;
+            padding: 15px;
+            text-align: left;
+            background: white;
+            transition: background 0.3s ease;
+        }
+
+        tbody tr:hover td {
+            background: #f5f7fa;
+        }
+
+        tbody tr {
+            animation: slideIn 0.3s ease-out;
         }
     </style>
 </head>
 
 <body>
+    <div id="splashScreen">
+        <div class="splash-content">
+            <div class="splash-logo">📝</div>
+            <div class="splash-title">Name Manager</div>
+            <div class="splash-subtitle">Exercise Solution</div>
+            <div class="spinner"></div>
+        </div>
+    </div>
 
-    <button onclick="window.history.back();">Back</button>
-    <h1>Exercise</h1>
+    <div id="mainContent">
+        <div class="container">
+            <button class="back-btn" onclick="window.history.back();">← Back</button>
+            <h1>📋 Exercise</h1>
 
-    <h3>Create an UI with functions as below
-    </h3>
-    <img src="./../images/exercise_01.png">
-    </p>
-    <ul>
-        <li>'Add': to add new input first name and last name as new record in table
-        </li>
-        <li>'Reset input': to clear values in 2 input texts
-        </li>
-        <li>'Reset table': to clear data rows in table
-        </li>
-    </ul>
+            <h3>Create an UI with functions as below</h3>
+            <ul>
+                <li>'Add': to add new input first name and last name as new record in table</li>
+                <li>'Reset input': to clear values in 2 input texts</li>
+                <li>'Reset table': to clear data rows in table</li>
+            </ul>
 
-    </p>
+            <h2>✨ Your solution for exercise</h2>
 
-    <h2>Your solution for exercise</h2>
+            <div class="input-section">
+                <input type="text" id="firstName" placeholder="Enter first name">
+                <input type="text" id="lastName" placeholder="Enter last name">
+                <button onclick="addRecord()">➕ Add</button>
+                <button onclick="resetInput()">🔄 Reset Input</button>
+                <button onclick="resetTable()">🗑️ Reset Table</button>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>First name</th>
+                        <th>Last name</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <tr>
+                        <td>John</td>
+                        <td>Smith</td>
+                    </tr>
+                    <tr>
+                        <td>Jo</td>
+                        <td>Bola</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function addRecord() {
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            
+            if (firstName.trim() === '' || lastName.trim() === '') {
+                alert('Please enter both first name and last name');
+                return;
+            }
+            
+            const tableBody = document.getElementById('tableBody');
+            const newRow = document.createElement('tr');
+            
+            const firstNameCell = document.createElement('td');
+            firstNameCell.textContent = firstName;
+            
+            const lastNameCell = document.createElement('td');
+            lastNameCell.textContent = lastName;
+            
+            newRow.appendChild(firstNameCell);
+            newRow.appendChild(lastNameCell);
+            tableBody.appendChild(newRow);
+            
+            resetInput();
+        }
+
+        function resetInput() {
+            document.getElementById('firstName').value = '';
+            document.getElementById('lastName').value = '';
+        }
+
+        function resetTable() {
+            document.getElementById('tableBody').innerHTML = '';
+        }
+
+        document.getElementById('firstName').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('lastName').focus();
+            }
+        });
+
+        document.getElementById('lastName').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addRecord();
+            }
+        });
+    </script>
 
 </body>
 
